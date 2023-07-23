@@ -3,8 +3,8 @@
 
 | Student Information |                |
 |:-------------------:|----------------|
-|  Student Name       |   Name Here    |
-|  Student Email      |   Email Here   |
+|  Student Name       |    Gio Jung    |
+|  Student Email      |gjung1@sfsu.edu |
 
 ## src Folder Purpose 
 src folder is to be used to store source code only.

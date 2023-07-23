@@ -17,7 +17,7 @@ public class Tank{
     private float vy;
     private float angle;
 
-    private float R = 5;
+    private float R = 2;
     private float ROTATIONSPEED = 3.0f;
 
     private BufferedImage img;
@@ -102,7 +102,7 @@ public class Tank{
     private void moveBackwards() {
         vx =  Math.round(R * Math.cos(Math.toRadians(angle)));
         vy =  Math.round(R * Math.sin(Math.toRadians(angle)));
-        x -= vx;z
+        x -= vx;
         y -= vy;
        checkBorder();
     }
@@ -114,6 +114,9 @@ public class Tank{
         y += vy;
         checkBorder();
     }
+
+    //left and right side has a small black space by Java
+    //so I need to ADD the black space for the bottom
 
 
     private void checkBorder() {
@@ -142,7 +145,6 @@ public class Tank{
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
-        g2d.setColor(Color.RED);
         //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
         g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
 
