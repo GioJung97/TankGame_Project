@@ -27,7 +27,6 @@ public class GameWorld extends JPanel implements Runnable {
     private BufferedImage world;
     private Tank t1;
     private Tank t2;
-    private floor floorImg;
     private final Launcher lf;
     private long tick = 0;
     List<GameObject> gobjs = new ArrayList<>(800);
@@ -78,7 +77,6 @@ public class GameWorld extends JPanel implements Runnable {
                 BufferedImage.TYPE_INT_RGB);
 
 
-
         InputStreamReader isr = new InputStreamReader(
                 Objects.requireNonNull(
                     ResourceManager.class.getClassLoader().getResourceAsStream("maps/TankGameMap.csv"))
@@ -96,20 +94,17 @@ public class GameWorld extends JPanel implements Runnable {
             int row = 0;
             String [] gameItems;
             while(mapReader.ready()){
-                System.out.println(mapReader.readLine());
                 gameItems = mapReader.readLine().strip().split(",");
                 for(int col = 0; col < gameItems.length; col++){
                     String gameObjectType = gameItems[col];
                     if("0".equals(gameObjectType)) continue;
                     this.gobjs.add(GameObject.newInstance(gameObjectType, col * 30, row * 30));
-
                 }
                 row ++;
             }
         }catch (IOException e){
             throw new RuntimeException();
         }
-
 
 
         t1 = new Tank(300, 300, 0, 0, (short) 0, ResourceManager.getSprite("tank1"));
@@ -119,7 +114,6 @@ public class GameWorld extends JPanel implements Runnable {
         t2 = new Tank(500, 500, 0, 0, (short) 0, ResourceManager.getSprite("tank2"));
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT);
         this.lf.getJf().addKeyListener(tc2);
-
 
     }
 

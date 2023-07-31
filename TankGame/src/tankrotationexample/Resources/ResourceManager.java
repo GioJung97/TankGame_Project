@@ -44,10 +44,9 @@ public class ResourceManager {
     }
 
     public static void loadResources(){
-        ResourcePool<Bullet> bPool = new ResourcePool<>("bullet", 300);
-        bPool.fillPool(Bullet.class, 300);
         ResourceManager.initSprite();
     }
+
 
     public static BufferedImage getSprite(String type) {
         if(!ResourceManager.sprites.containsKey(type)){
