@@ -1,18 +1,19 @@
 package tankrotationexample.game;
 
 import tankrotationexample.GameConstants;
+import tankrotationexample.Resources.ResourcePool;
+
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-/**
- *
- * @author anthony-pc
- */
+
 public class Tank{
 
     private float x;
     private float y;
+    private float sX;
+    private float sY;
     private float vx;
     private float vy;
     private float angle;
@@ -20,11 +21,18 @@ public class Tank{
     private float R = 2;
     private float ROTATIONSPEED = 3.0f;
 
+    static ResourcePool<Bullet> bPool;
+
     private BufferedImage img;
     private boolean UpPressed;
     private boolean DownPressed;
     private boolean RightPressed;
     private boolean LeftPressed;
+
+    static{
+        bPool = new ResourcePool<>("bullet", 300);
+        bPool.fillPool(Bullet.class, 300);
+    }
 
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
         this.x = x;
@@ -105,6 +113,7 @@ public class Tank{
         x -= vx;
         y -= vy;
        checkBorder();
+       centerScreen();
     }
 
     private void moveForwards() {
@@ -113,6 +122,7 @@ public class Tank{
         x += vx;
         y += vy;
         checkBorder();
+        centerScreen();
     }
 
     //left and right side has a small black space by Java
@@ -123,14 +133,28 @@ public class Tank{
         if (x < 30) {
             x = 30;
         }
-        if (x >= GameConstants.GAME_SCREEN_WIDTH - 88) {
-            x = GameConstants.GAME_SCREEN_WIDTH - 88;
+        if (x >= GameConstants.GAME_SCREEN_WIDTH - 80) {
+            x = GameConstants.GAME_SCREEN_WIDTH - 80;
         }
         if (y < 40) {
             y = 40;
         }
         if (y >= GameConstants.GAME_SCREEN_HEIGHT - 80) {
             y = GameConstants.GAME_SCREEN_HEIGHT - 80;
+        }
+    }
+
+    public void centerScreen(){
+        this.sX = this.x - GameConstants.GAME_SCREEN_WIDTH / 4.f;
+        this.sY = this.y = GameConstants.GAME_SCREEN_HEIGHT / 2.f;
+
+        if(this.sX < 0) this.sX = 0;
+        if(this.sY < 0) this.sY = 0;
+        if(this.sX > GameConstants.GAME_WORLD_WIDTH - GameConstants.GAME_SCREEN_WIDTH/2){
+            this.sX = GameConstants.GAME_WORLD_WIDTH - GameConstants.GAME_SCREEN_WIDTH/2;
+        }
+        if(this.sY > GameConstants.GAME_WORLD_HEIGHT - GameConstants.GAME_SCREEN_HEIGHT){
+            this.sY = GameConstants.GAME_WORLD_HEIGHT - GameConstants.GAME_SCREEN_HEIGHT;
         }
     }
 
@@ -148,5 +172,21 @@ public class Tank{
         //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
         g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
 
+    }
+
+    public float getX() {
+        return x;
+    }
+
+    public float getY(){
+        return y;
+    }
+
+    public float getsX() {
+        return sX;
+    }
+
+    public float getsY() {
+        return sY;
     }
 }

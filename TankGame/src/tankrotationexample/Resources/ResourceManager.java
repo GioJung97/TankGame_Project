@@ -1,5 +1,7 @@
 package tankrotationexample.Resources;
 
+import tankrotationexample.game.Bullet;
+
 import javax.imageio.ImageIO;
 import javax.sound.sampled.Clip;
 import java.awt.image.BufferedImage;
@@ -25,13 +27,25 @@ public class ResourceManager {
             ResourceManager.sprites.put("tank1", loadSprite("tank/tank1.png"));
             ResourceManager.sprites.put("tank2", loadSprite("tank/tank2.png"));
             ResourceManager.sprites.put("bullet", loadSprite("bullet/bullet.jpg"));
+            ResourceManager.sprites.put("rocket1", loadSprite("bullet/rocket1.png"));
+            ResourceManager.sprites.put("rocket2", loadSprite("bullet/rocket2.png"));
             ResourceManager.sprites.put("menu", loadSprite("menu/title.png"));
+            ResourceManager.sprites.put("healthPU", loadSprite("powerups/health.png"));
+            ResourceManager.sprites.put("shieldPU", loadSprite("powerups/shield.png"));
+            ResourceManager.sprites.put("speedPU", loadSprite("powerups/speed.png"));
+            ResourceManager.sprites.put("wall", loadSprite("walls/unbreak.jpg"));
+            ResourceManager.sprites.put("bWall1", loadSprite("walls/break1.jpg"));
+            ResourceManager.sprites.put("bWall2", loadSprite("walls/break2.jpg"));
+            ResourceManager.sprites.put("floor", loadSprite("floor/bg.bmp"));
+
         }catch (IOException e){
             throw new RuntimeException(e);
         }
     }
 
     public static void loadResources(){
+        ResourcePool<Bullet> bPool = new ResourcePool<>("bullet", 300);
+        bPool.fillPool(Bullet.class, 300);
         ResourceManager.initSprite();
     }
 
