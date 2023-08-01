@@ -1,11 +1,14 @@
 package tankrotationexample.game;
 
 import tankrotationexample.GameConstants;
+import tankrotationexample.Resources.ResourceManager;
 import tankrotationexample.Resources.ResourcePool;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Tank{
@@ -17,22 +20,26 @@ public class Tank{
     private float vx;
     private float vy;
     private float angle;
+    List<Bullet> ammo = new ArrayList<>();
 
     private float R = 2;
     private float ROTATIONSPEED = 3.0f;
 
-    static ResourcePool<Bullet> bPool;
+//    static ResourcePool<Bullet> bPool;
 
+    long timeSinceLastShot = 0L;
+    long coolDown = 2000;
     private BufferedImage img;
     private boolean UpPressed;
     private boolean DownPressed;
     private boolean RightPressed;
     private boolean LeftPressed;
+    private boolean shootPressed;
 
-    static{
-        bPool = new ResourcePool<>("bullet", 300);
-        bPool.fillPool(Bullet.class, 300);
-    }
+//    static{
+//        bPool = new ResourcePool<>("bullet", 300);
+//        bPool.fillPool(Bullet.class, 300);
+//    }
 
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
         this.x = x;
@@ -96,6 +103,12 @@ public class Tank{
             this.rotateRight();
         }
 
+        if(this.shootPressed && ((this.timeSinceLastShot + this.coolDown) < System.currentTimeMillis())){
+            this.timeSinceLastShot = System.currentTimeMillis();
+            this.ammo.add(new Bullet(x, y, ResourceManager.getSprite("bullet"), angle));
+        }
+
+        this.ammo.forEach(bullet -> bullet.update());
 
     }
 
@@ -124,9 +137,6 @@ public class Tank{
         checkBorder();
         centerScreen();
     }
-
-    //left and right side has a small black space by Java
-    //so I need to ADD the black space for the bottom
 
 
     private void checkBorder() {
@@ -169,8 +179,19 @@ public class Tank{
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
+        this.ammo.forEach(b -> b.drawImage(g2d));
         //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
         g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
+
+        g2d.setColor(Color.YELLOW);
+        g2d.drawRect((int)x, (int)y-20, 50, 10);
+        long currWidth = 50 -((this.timeSinceLastShot + this.coolDown) - System.currentTimeMillis()) / 60;
+        if(currWidth > 50){
+            currWidth = 50;
+        }
+        g2d.fillRect((int)x, (int)y-20, (int)currWidth, 10 );
+
+
 
     }
 
@@ -188,5 +209,14 @@ public class Tank{
 
     public float getsY() {
         return sY;
+    }
+
+    public void toggleShootPressed() {
+        this.shootPressed = true;
+    }
+
+    public void unToggleShootPressed() {
+        this.shootPressed = false;
+
     }
 }
