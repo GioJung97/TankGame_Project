@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class Tank{
+public class Tank extends GameObject{
 
     private float x;
     private float y;
@@ -25,10 +25,9 @@ public class Tank{
     private float R = 2;
     private float ROTATIONSPEED = 3.0f;
 
-//    static ResourcePool<Bullet> bPool;
-
     long timeSinceLastShot = 0L;
     long coolDown = 2000;
+
     private BufferedImage img;
     private boolean UpPressed;
     private boolean DownPressed;
@@ -36,10 +35,7 @@ public class Tank{
     private boolean LeftPressed;
     private boolean shootPressed;
 
-//    static{
-//        bPool = new ResourcePool<>("bullet", 300);
-//        bPool.fillPool(Bullet.class, 300);
-//    }
+    private Rectangle hitbox;
 
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
         this.x = x;
@@ -48,6 +44,7 @@ public class Tank{
         this.vy = vy;
         this.img = img;
         this.angle = angle;
+        this.hitbox = new Rectangle((int)x, (int)y, this.img.getWidth(), this.img.getHeight());
     }
 
     void setX(float x){ this.x = x; }
@@ -106,10 +103,11 @@ public class Tank{
         if(this.shootPressed && ((this.timeSinceLastShot + this.coolDown) < System.currentTimeMillis())){
             this.timeSinceLastShot = System.currentTimeMillis();
             this.ammo.add(new Bullet(x, y, ResourceManager.getSprite("bullet"), angle));
+
         }
 
         this.ammo.forEach(bullet -> bullet.update());
-
+        this.hitbox.setLocation((int)x, (int)y);
     }
 
     private void rotateLeft() {
@@ -174,16 +172,19 @@ public class Tank{
     }
 
 
-    void drawImage(Graphics g) {
+    public void drawImage(Graphics g) {
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
         this.ammo.forEach(b -> b.drawImage(g2d));
         //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
-        g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
+
+        //hit box for tank
+//        g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
 
         g2d.setColor(Color.YELLOW);
+        //charge gage
         g2d.drawRect((int)x, (int)y-20, 50, 10);
         long currWidth = 50 -((this.timeSinceLastShot + this.coolDown) - System.currentTimeMillis()) / 60;
         if(currWidth > 50){
@@ -193,6 +194,11 @@ public class Tank{
 
 
 
+    }
+
+    @Override
+    public Rectangle getHitbox() {
+        return this.hitbox.getBounds();
     }
 
     public float getX() {
@@ -218,5 +224,17 @@ public class Tank{
     public void unToggleShootPressed() {
         this.shootPressed = false;
 
+    }
+
+    public void collides(GameObject with){
+        if(with instanceof Bullet){
+            //lose life
+        }else if(with instanceof Walls){
+            //stop
+            x -= vx;
+            y -=vy;
+        }else if (with instanceof PowerUps){
+            ((PowerUps) with).applyPowerUp(this);
+        }
     }
 }

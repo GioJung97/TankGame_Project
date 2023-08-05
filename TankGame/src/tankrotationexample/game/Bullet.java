@@ -16,12 +16,18 @@ public class Bullet extends GameObject{
     private float angle;
     private float R = 3;
     private BufferedImage img;
+    private Rectangle hitbox;
 
     Bullet(float x, float y, BufferedImage img, float angle) {
         this.x = x; //* 1.35f
         this.y = y; //* 1.12f
         this.img = img;
         this.angle = angle;
+        this.hitbox = new Rectangle((int)x, (int)y, this.img.getWidth(), this.img.getHeight());
+    }
+
+    public Rectangle getHitbox(){
+        return this.hitbox.getBounds();
     }
 
     void setX(float x) { this.x = x;}
@@ -31,9 +37,10 @@ public class Bullet extends GameObject{
     void update() {
         vx = Math.round(R * Math.cos(Math.toRadians(angle)));
         vy = Math.round(R * Math.sin(Math.toRadians(angle)));
-        x += vx * 3;
-        y += vy * 3;
+        x += vx * 2;
+        y += vy * 2;
         checkBorder();
+        this.hitbox.setLocation((int)x, (int)y);
     }
 
     private void checkBorder() {
@@ -64,7 +71,7 @@ public class Bullet extends GameObject{
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
 //      g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
-        g2d.drawRect((int)x,(int)y,this.img.getWidth() * 3, this.img.getHeight() * 3);
+//        g2d.drawRect((int)x,(int)y,this.img.getWidth() * 3, this.img.getHeight() * 3);
 
 
     }
@@ -75,5 +82,14 @@ public class Bullet extends GameObject{
 
     public float getY(){
         return y;
+    }
+
+    @Override
+    public void collides(GameObject with){
+        if(with instanceof Bullet){
+
+        }else if(with instanceof Walls){
+
+        }
     }
 }

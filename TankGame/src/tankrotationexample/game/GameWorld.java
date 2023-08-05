@@ -29,13 +29,18 @@ public class GameWorld extends JPanel implements Runnable {
     private Tank t2;
     private final Launcher lf;
     private long tick = 0;
-    List<GameObject> gobjs = new ArrayList<>(800);
+    private List<GameObject> gobjs = new ArrayList<>(800);
+    private List<Animation> anim = new ArrayList<>();
 
     /**
      *
      */
     public GameWorld(Launcher lf) {
         this.lf = lf;
+    }
+
+    public void addAnimation (Animation a){
+//        this.
     }
 
     @Override
@@ -45,7 +50,8 @@ public class GameWorld extends JPanel implements Runnable {
                 this.tick++;
                 this.t1.update();
                 this.t2.update();// update tank
-                //check collisions
+//                this.anim.forEach(animation -> animation.update());
+                this.checkCollision();
                 this.repaint();   // redraw game
                 /*
                  * Sleep for 1000/144 ms (~6.9ms). This is done to have our 
@@ -55,6 +61,26 @@ public class GameWorld extends JPanel implements Runnable {
             }
         } catch (InterruptedException ignored) {
             System.out.println(ignored);
+        }
+    }
+
+    private void checkCollision() {
+        for (int i = 0; i < this.gobjs.size(); i++) {
+            GameObject ob1 = this.gobjs.get(i);
+            if(ob1 instanceof Walls || ob1 instanceof PowerUps) continue;
+            for (int j = 0; j < this.gobjs.size(); j++) {
+                if(i == j) continue;
+                GameObject ob2 = this.gobjs.get(j);
+                if(ob1.getHitbox().intersects(ob2.getHitbox())){
+                    System.out.println("Hit");
+                    ob1.collides(ob2);
+                    if(ob1 instanceof Bullet && ob2 instanceof bWall){
+                        gobjs.remove(j);
+                    }else if(ob1 instanceof Tank && ob2 instanceof PowerUps){
+                        gobjs.remove(j);
+                    }
+                }
+            }
         }
     }
 
@@ -82,6 +108,8 @@ public class GameWorld extends JPanel implements Runnable {
                     ResourceManager.class.getClassLoader().getResourceAsStream("maps/TankGameMap.csv"))
                 );
 
+//        this.anim.add(new Animation(300, 300, ResourceManager.getAnimation("bullethit")));
+
         //9 -> unbreakable && not in a collisions
         //3 -> unbreakable
         //2 -> breakable
@@ -107,15 +135,20 @@ public class GameWorld extends JPanel implements Runnable {
         }
 
 
-        t1 = new Tank(120, 120, 0, 0, (short) 0, ResourceManager.getSprite("tank1"));
+        t1 = new Tank(120, 120, 0, 0, (short) 90, ResourceManager.getSprite("tank1"));
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
         this.lf.getJf().addKeyListener(tc1);
 
-        t2 = new Tank(1750, 1270, 0, 0, (short) 0, ResourceManager.getSprite("tank2"));
+        t2 = new Tank(1750, 1270, 0, 0, (short) 270, ResourceManager.getSprite("tank2"));
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT);
         this.lf.getJf().addKeyListener(tc2);
 
+        this.gobjs.add(t1);
+        this.gobjs.add(t2);
     }
+
+
+
 
     public void renderFloor(Graphics g){
         for(int i = 0; i< GameConstants.GAME_WORLD_WIDTH; i+=320){
