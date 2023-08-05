@@ -8,7 +8,7 @@ public class Shield extends GameObject implements PowerUps{
     float x, y;
     BufferedImage img;
     private Rectangle hitbox;
-    private boolean removePU = false;
+    boolean hasCollided = false;
 
     public Shield(float x, float y, BufferedImage img) {
         this.x = x;
@@ -22,8 +22,9 @@ public class Shield extends GameObject implements PowerUps{
     }
 
     public void drawImage(Graphics buffer) {
-        buffer.drawImage(this.img, (int)x, (int)y, null);
-
+        if(!hasCollided){
+            buffer.drawImage(this.img, (int)x, (int)y, null);
+        }
     }
 
     @Override
@@ -32,12 +33,17 @@ public class Shield extends GameObject implements PowerUps{
     }
 
     @Override
-    public void applyPowerUp(GameObject Tank) {
-
+    public boolean hasCollided() {
+        return hasCollided;
     }
 
     @Override
-    public boolean isRemovePU() {
-        return removePU = true;
+    public void setHasCollided() {
+        this.hasCollided = true;
+    }
+
+    @Override
+    public void applyPowerUp(GameObject Tank) {
+
     }
 }

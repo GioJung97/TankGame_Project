@@ -4,5 +4,5 @@ public interface PowerUps {
 
     void applyPowerUp(GameObject Tank);
 
-    boolean isRemovePU();
+    void setHasCollided();
 }

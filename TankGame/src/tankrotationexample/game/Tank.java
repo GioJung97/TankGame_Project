@@ -20,6 +20,7 @@ public class Tank extends GameObject{
     private float vx;
     private float vy;
     private float angle;
+    private int lifeCount = 2;
     List<Bullet> ammo = new ArrayList<>();
 
     private float R = 2;
@@ -36,6 +37,13 @@ public class Tank extends GameObject{
     private boolean shootPressed;
 
     private Rectangle hitbox;
+
+
+//    static ResourcePool<Bullet> bPool;
+//    static {
+//        bPool = new ResourcePool<>("bullet", 300);
+//        bPool.fillPool(Bullet.class, 300);
+//    }
 
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
         this.x = x;
@@ -102,8 +110,8 @@ public class Tank extends GameObject{
 
         if(this.shootPressed && ((this.timeSinceLastShot + this.coolDown) < System.currentTimeMillis())){
             this.timeSinceLastShot = System.currentTimeMillis();
-            this.ammo.add(new Bullet(x, y, ResourceManager.getSprite("bullet"), angle));
-
+            var b = new Bullet(x, y, ResourceManager.getSprite("bullet"), angle);
+            this.ammo.add(b);
         }
 
         this.ammo.forEach(bullet -> bullet.update());
@@ -184,7 +192,7 @@ public class Tank extends GameObject{
 //        g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
 
         g2d.setColor(Color.YELLOW);
-        //charge gage
+        //bullet cool time
         g2d.drawRect((int)x, (int)y-20, 50, 10);
         long currWidth = 50 -((this.timeSinceLastShot + this.coolDown) - System.currentTimeMillis()) / 60;
         if(currWidth > 50){
@@ -217,24 +225,38 @@ public class Tank extends GameObject{
         return sY;
     }
 
+    public float getAngle(){
+        return angle;
+    }
+
+    public int getLifeCount(){
+        return lifeCount;
+    }
+
     public void toggleShootPressed() {
         this.shootPressed = true;
     }
 
     public void unToggleShootPressed() {
         this.shootPressed = false;
-
     }
 
     public void collides(GameObject with){
         if(with instanceof Bullet){
             //lose life
+            this.lifeCount --;
         }else if(with instanceof Walls){
             //stop
             x -= vx;
             y -=vy;
         }else if (with instanceof PowerUps){
+            ((PowerUps) with).setHasCollided();
             ((PowerUps) with).applyPowerUp(this);
         }
+    }
+
+    @Override
+    public boolean hasCollided() {
+        return false;
     }
 }

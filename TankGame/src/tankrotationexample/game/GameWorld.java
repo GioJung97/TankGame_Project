@@ -27,6 +27,8 @@ public class GameWorld extends JPanel implements Runnable {
     private BufferedImage world;
     private Tank t1;
     private Tank t2;
+    private Bullet bullet1;
+    private Bullet bullet2;
     private final Launcher lf;
     private long tick = 0;
     private List<GameObject> gobjs = new ArrayList<>(800);
@@ -52,12 +54,19 @@ public class GameWorld extends JPanel implements Runnable {
                 this.t2.update();// update tank
 //                this.anim.forEach(animation -> animation.update());
                 this.checkCollision();
+                this.gobjs.removeIf(gameObject -> gameObject.hasCollided());
                 this.repaint();   // redraw game
                 /*
                  * Sleep for 1000/144 ms (~6.9ms). This is done to have our 
                  * loop run at a fixed rate per/sec. 
                 */
                 Thread.sleep(1000 / 144);
+
+                //end game
+//                if(t1.getLifeCount() == 0 || t2.getLifeCount() == 0){
+//                    lf.setFrame("end");
+//                    break;
+//                }
             }
         } catch (InterruptedException ignored) {
             System.out.println(ignored);
@@ -74,9 +83,8 @@ public class GameWorld extends JPanel implements Runnable {
                 if(ob1.getHitbox().intersects(ob2.getHitbox())){
                     System.out.println("Hit");
                     ob1.collides(ob2);
-                    if(ob1 instanceof Bullet && ob2 instanceof bWall){
-                        gobjs.remove(j);
-                    }else if(ob1 instanceof Tank && ob2 instanceof PowerUps){
+                    //don't remove in here
+                    if(ob1 instanceof Tank && ob2 instanceof bWall){
                         gobjs.remove(j);
                     }
                 }
@@ -145,10 +153,8 @@ public class GameWorld extends JPanel implements Runnable {
 
         this.gobjs.add(t1);
         this.gobjs.add(t2);
+
     }
-
-
-
 
     public void renderFloor(Graphics g){
         for(int i = 0; i< GameConstants.GAME_WORLD_WIDTH; i+=320){
@@ -195,5 +201,13 @@ public class GameWorld extends JPanel implements Runnable {
         this.t2.drawImage(buffer);
         renderSplitScreen(g2);
         renderMiniMap(g2);
+    }
+
+    public static void main(String[] args) {
+        Launcher launcher = new Launcher();
+        GameWorld gameWorld = new GameWorld(launcher);
+        ResourceManager.loadResources();
+        gameWorld.InitializeGame();
+        gameWorld.checkCollision();
     }
 }

@@ -86,10 +86,13 @@ public class Bullet extends GameObject{
 
     @Override
     public void collides(GameObject with){
-        if(with instanceof Bullet){
-
-        }else if(with instanceof Walls){
+        if(with instanceof Walls){
 
         }
+    }
+
+    @Override
+    public boolean hasCollided() {
+        return false;
     }
 }

@@ -34,6 +34,11 @@ public class Wall extends GameObject implements Walls{
 
     }
 
+    @Override
+    public boolean hasCollided() {
+        return false;
+    }
+
     public void drawImage(Graphics buffer) {
         buffer.drawImage(this.img, (int)x, (int)y, null);
 
