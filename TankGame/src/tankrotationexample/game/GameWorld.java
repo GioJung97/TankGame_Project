@@ -50,8 +50,8 @@ public class GameWorld extends JPanel implements Runnable {
         try {
             while (true) {
                 this.tick++;
-                this.t1.update();
-                this.t2.update();// update tank
+                this.t1.update(this);
+                this.t2.update(this);// update tank
 //                this.anim.forEach(animation -> animation.update());
                 this.checkCollision();
                 this.gobjs.removeIf(gameObject -> gameObject.hasCollided());
@@ -83,10 +83,6 @@ public class GameWorld extends JPanel implements Runnable {
                 if(ob1.getHitbox().intersects(ob2.getHitbox())){
                     System.out.println("Hit");
                     ob1.collides(ob2);
-                    //don't remove in here
-                    if(ob1 instanceof Tank && ob2 instanceof bWall){
-                        gobjs.remove(j);
-                    }
                 }
             }
         }
@@ -209,5 +205,9 @@ public class GameWorld extends JPanel implements Runnable {
         ResourceManager.loadResources();
         gameWorld.InitializeGame();
         gameWorld.checkCollision();
+    }
+
+    public void addGameObject(Bullet obj) {
+        this.gobjs.add(obj);
     }
 }

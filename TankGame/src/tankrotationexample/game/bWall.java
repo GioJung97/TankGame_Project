@@ -9,6 +9,7 @@ public class bWall extends GameObject implements Walls {
     float y;
     BufferedImage img;
     private Rectangle hitbox;
+    boolean hasCollided = false;
 
     public bWall(float x, float y, BufferedImage img) {
         this.x = x;
@@ -36,11 +37,16 @@ public class bWall extends GameObject implements Walls {
 
     @Override
     public boolean hasCollided() {
-        return false;
+        return hasCollided;
+    }
+
+    public void setHasCollided(){
+        hasCollided = true;
     }
 
     public void drawImage(Graphics buffer) {
-        buffer.drawImage(this.img, (int)x, (int)y, null);
-
+        if(!hasCollided){
+            buffer.drawImage(this.img, (int)x, (int)y, null);
+        }
     }
 }

@@ -4,4 +4,5 @@ import java.awt.image.BufferedImage;
 
 public interface Walls {
 
+    void setHasCollided();
 }

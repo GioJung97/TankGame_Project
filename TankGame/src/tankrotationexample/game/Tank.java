@@ -91,7 +91,7 @@ public class Tank extends GameObject{
         this.LeftPressed = false;
     }
 
-    void update() {
+    void update(GameWorld gw) {
         if (this.UpPressed) {
             this.moveForwards();
         }
@@ -112,6 +112,7 @@ public class Tank extends GameObject{
             this.timeSinceLastShot = System.currentTimeMillis();
             var b = new Bullet(x, y, ResourceManager.getSprite("bullet"), angle);
             this.ammo.add(b);
+            gw.addGameObject(b);
         }
 
         this.ammo.forEach(bullet -> bullet.update());

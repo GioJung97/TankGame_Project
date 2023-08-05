@@ -44,4 +44,8 @@ public class Wall extends GameObject implements Walls{
 
     }
 
+    @Override
+    public void setHasCollided() {
+
+    }
 }
