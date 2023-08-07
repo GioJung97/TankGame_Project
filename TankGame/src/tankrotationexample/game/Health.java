@@ -9,7 +9,6 @@ public class Health extends GameObject implements PowerUps {
     BufferedImage img;
     private Rectangle hitbox;
     private boolean hasCollided = false;
-    int healthCount = 3;
 
     public Health(float x, float y, BufferedImage img) {
         this.x = x;

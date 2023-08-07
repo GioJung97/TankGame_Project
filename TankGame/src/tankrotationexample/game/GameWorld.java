@@ -109,7 +109,7 @@ public class GameWorld extends JPanel implements Runnable {
 
         InputStreamReader isr = new InputStreamReader(
                 Objects.requireNonNull(
-                    ResourceManager.class.getClassLoader().getResourceAsStream("maps/TankGameMap.csv"))
+                    ResourceManager.class.getClassLoader().getResourceAsStream("maps/TestMap.csv"))
                 );
 
 //        this.anim.add(new Animation(300, 300, ResourceManager.getAnimation("bullethit")));
@@ -120,6 +120,7 @@ public class GameWorld extends JPanel implements Runnable {
         //4 -> shield
         //5 -> health
         //6 -> speed
+        //7 -> bSpeed
         //0 -> nothing
 
         try (BufferedReader mapReader = new BufferedReader(isr)){
@@ -188,14 +189,15 @@ public class GameWorld extends JPanel implements Runnable {
     }
 
     public void lifeScreen(Graphics2D g){
-        int gap = 0;
+        int gap1 = 0;
+        int gap2 = 0;
         for (int i = 0; i < t1.getLifeCount(); i++) {
-            g.drawImage(t1.getLifeImg(), 25 + gap, 25, null);
-            gap += 40;
+            g.drawImage(t1.getLifeImg(), 25 + gap1, 25, null);
+            gap1 += 40;
         }
         for (int i = 0; i < t2.getLifeCount(); i++) {
-            g.drawImage(t2.getLifeImg(), GameConstants.GAME_SCREEN_WIDTH/2 + 600 - gap, 850, null);
-            gap -= 40;
+            g.drawImage(t2.getLifeImg(), GameConstants.GAME_SCREEN_WIDTH/2 + 560 + gap2, 850, null);
+            gap2 -= 40;
         }
     }
 

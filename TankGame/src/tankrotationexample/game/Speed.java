@@ -35,7 +35,6 @@ public class Speed extends GameObject implements PowerUps {
 
     @Override
     public void collides(GameObject ob) {
-
     }
 
     @Override
@@ -45,6 +44,6 @@ public class Speed extends GameObject implements PowerUps {
 
     @Override
     public void applyPowerUp(GameObject Tank) {
-
+        ((Tank) Tank).speedPowerUp();
     }
 }

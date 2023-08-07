@@ -248,7 +248,25 @@ public class Tank extends GameObject{
     }
 
     public void lifePowerUp(){
-        this.lifeCount ++;
+        if(this.lifeCount < 5){
+            this.lifeCount ++;
+        }
+    }
+
+    public void speedPowerUp(){
+        if(this.R < 5){
+            this.R++;
+        }
+    }
+
+    public void ShieldPowerUp(){
+
+    }
+
+    public void bSpeedPowerUp(){
+        if(this.coolDown > 400){
+            this.coolDown -= 400;
+        }
     }
 
     public float getAngle(){
