@@ -23,13 +23,14 @@ public class Tank extends GameObject{
     private float vy;
     private float angle;
     private int lifeCount = 3;
+    private boolean shieldEffect = false;
     List<Bullet> ammo = new ArrayList<>();
 
     private float R = 2;
     private float ROTATIONSPEED = 3.0f;
 
     long timeSinceLastShot = 0L;
-    long coolDown = 2000;
+    long coolDown = 3000;
 
     private BufferedImage img;
     private boolean UpPressed;
@@ -201,6 +202,13 @@ public class Tank extends GameObject{
         AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
         rotation.rotate(Math.toRadians(angle), this.img.getWidth() / 2.0, this.img.getHeight() / 2.0);
         Graphics2D g2d = (Graphics2D) g;
+
+        //shield img
+        if(shieldEffect){
+            g2d.drawImage(ResourceManager.getSprite("shieldEffect"), (int)this.x - 27, (int)this.y - 25 , null);
+        }
+
+        //tank img
         g2d.drawImage(this.img, rotation, null);
         this.ammo.forEach(b -> b.drawImage(g2d));
 //        g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
@@ -216,6 +224,8 @@ public class Tank extends GameObject{
             currWidth = 50;
         }
         g2d.fillRect((int)x, (int)y-20, (int)currWidth, 10 );
+
+
     }
 
     @Override
@@ -247,6 +257,10 @@ public class Tank extends GameObject{
         return this.lifeCount;
     }
 
+    public boolean isShieldEffect() {
+        return shieldEffect;
+    }
+
     public void lifePowerUp(){
         if(this.lifeCount < 5){
             this.lifeCount ++;
@@ -264,9 +278,17 @@ public class Tank extends GameObject{
     }
 
     public void bSpeedPowerUp(){
-        if(this.coolDown > 400){
-            this.coolDown -= 400;
+        if(this.coolDown > 500){
+            this.coolDown -= 500;
         }
+    }
+
+    public void shieldEffectOn(){
+        this.shieldEffect = true;
+    }
+
+    public void shieldEffectOff(){
+        this.shieldEffect = false;
     }
 
     public float getAngle(){
@@ -284,7 +306,11 @@ public class Tank extends GameObject{
     public void collides(GameObject with){
         if(with instanceof Bullet){
             //lose life
-            this.lifeCount --;
+            if(this.shieldEffect == true){
+                shieldEffectOff();
+            }else{
+                this.lifeCount --;
+            }
         }else if(with instanceof Walls){
             //stop
             if (this.UpPressed) {

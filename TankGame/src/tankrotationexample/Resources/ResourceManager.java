@@ -52,6 +52,8 @@ public class ResourceManager {
             ResourceManager.sprites.put("bWall2", loadSprite("walls/break2.jpg"));
             ResourceManager.sprites.put("floor", loadSprite("floor/bg.bmp"));
             ResourceManager.sprites.put("life", loadSprite("Life/life.png"));
+            ResourceManager.sprites.put("shieldEffect", loadSprite("shield/shield.png"));
+
 
         }catch (IOException e){
             throw new RuntimeException(e);

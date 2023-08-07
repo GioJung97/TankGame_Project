@@ -44,6 +44,6 @@ public class Shield extends GameObject implements PowerUps{
 
     @Override
     public void applyPowerUp(GameObject Tank) {
-
+        ((Tank) Tank).shieldEffectOn();
     }
 }

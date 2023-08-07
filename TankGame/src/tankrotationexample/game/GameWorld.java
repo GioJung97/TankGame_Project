@@ -109,7 +109,7 @@ public class GameWorld extends JPanel implements Runnable {
 
         InputStreamReader isr = new InputStreamReader(
                 Objects.requireNonNull(
-                    ResourceManager.class.getClassLoader().getResourceAsStream("maps/TestMap.csv"))
+                    ResourceManager.class.getClassLoader().getResourceAsStream("maps/TankGameMap.csv"))
                 );
 
 //        this.anim.add(new Animation(300, 300, ResourceManager.getAnimation("bullethit")));
