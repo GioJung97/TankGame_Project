@@ -40,7 +40,6 @@ public class Bullet extends GameObject{
         vy = Math.round(R * Math.sin(Math.toRadians(angle)));
         x += vx * 2;
         y += vy * 2;
-//        checkBorder();
         this.hitbox.setLocation((int)x, (int)y);
     }
 
@@ -90,6 +89,8 @@ public class Bullet extends GameObject{
         if(with instanceof Walls){
             setHasCollided();
             ((Walls) with).setHasCollided();
+        }else if(with instanceof Tank){
+            setHasCollided();
         }
     }
 

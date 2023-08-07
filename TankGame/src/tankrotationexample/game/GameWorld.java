@@ -139,17 +139,16 @@ public class GameWorld extends JPanel implements Runnable {
         }
 
 
-        t1 = new Tank(120, 120, 0, 0, (short) 90, ResourceManager.getSprite("tank1"));
+        t1 = new Tank(120, 120, 0, 0, (short) 90, ResourceManager.getSprite("tank1"), 3);
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
         this.lf.getJf().addKeyListener(tc1);
 
-        t2 = new Tank(1750, 1270, 0, 0, (short) 270, ResourceManager.getSprite("tank2"));
+        t2 = new Tank(1750, 1270, 0, 0, (short) 270, ResourceManager.getSprite("tank2"), 3);
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT);
         this.lf.getJf().addKeyListener(tc2);
 
         this.gobjs.add(t1);
         this.gobjs.add(t2);
-
     }
 
     public void renderFloor(Graphics g){
@@ -180,10 +179,24 @@ public class GameWorld extends JPanel implements Runnable {
         BufferedImage rh = this.world.getSubimage((int) this.t2.getsX(), (int) this.t2.getsY(),
                 GameConstants.GAME_SCREEN_WIDTH/2,
                 GameConstants.GAME_SCREEN_HEIGHT);
+
         g.drawImage(lh, 0, 0, null);
         g.drawImage(rh, GameConstants.GAME_SCREEN_WIDTH/2 + 4, 0, null);
+
         this.t1.centerScreen();
         this.t2.centerScreen();
+    }
+
+    public void lifeScreen(Graphics2D g){
+        int gap = 0;
+        for (int i = 0; i < t1.getLifeCount(); i++) {
+            g.drawImage(t1.getLifeImg(), 25 + gap, 25, null);
+            gap += 40;
+        }
+        for (int i = 0; i < t2.getLifeCount(); i++) {
+            g.drawImage(t2.getLifeImg(), GameConstants.GAME_SCREEN_WIDTH/2 + 600 - gap, 850, null);
+            gap -= 40;
+        }
     }
 
 
@@ -197,15 +210,16 @@ public class GameWorld extends JPanel implements Runnable {
         this.t2.drawImage(buffer);
         renderSplitScreen(g2);
         renderMiniMap(g2);
+        lifeScreen(g2);
     }
 
-    public static void main(String[] args) {
-        Launcher launcher = new Launcher();
-        GameWorld gameWorld = new GameWorld(launcher);
-        ResourceManager.loadResources();
-        gameWorld.InitializeGame();
-        gameWorld.checkCollision();
-    }
+//    public static void main(String[] args) {
+//        Launcher launcher = new Launcher();
+//        GameWorld gameWorld = new GameWorld(launcher);
+//        ResourceManager.loadResources();
+//        gameWorld.InitializeGame();
+//        gameWorld.checkCollision();
+//    }
 
     public void addGameObject(Bullet obj) {
         this.gobjs.add(obj);

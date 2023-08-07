@@ -6,7 +6,9 @@ import tankrotationexample.Resources.ResourcePool;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
+import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,7 +22,7 @@ public class Tank extends GameObject{
     private float vx;
     private float vy;
     private float angle;
-    private int lifeCount = 2;
+    private int lifeCount = 3;
     List<Bullet> ammo = new ArrayList<>();
 
     private float R = 2;
@@ -45,7 +47,7 @@ public class Tank extends GameObject{
 //        bPool.fillPool(Bullet.class, 300);
 //    }
 
-    Tank(float x, float y, float vx, float vy, float angle, BufferedImage img) {
+    Tank(float x, float y, float vx, float vy, float angle, BufferedImage img, int lifeCount) {
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -53,6 +55,7 @@ public class Tank extends GameObject{
         this.img = img;
         this.angle = angle;
         this.hitbox = new Rectangle((int)x, (int)y, this.img.getWidth(), this.img.getHeight());
+        this.lifeCount = lifeCount;
     }
 
     void setX(float x){ this.x = x; }
@@ -110,13 +113,23 @@ public class Tank extends GameObject{
 
         if(this.shootPressed && ((this.timeSinceLastShot + this.coolDown) < System.currentTimeMillis())){
             this.timeSinceLastShot = System.currentTimeMillis();
-            var b = new Bullet(x, y, ResourceManager.getSprite("bullet"), angle);
+            var b = new Bullet(this.safeShootX(), this.safeShootY(), ResourceManager.getSprite("bullet"), angle);
             this.ammo.add(b);
             gw.addGameObject(b);
         }
 
         this.ammo.forEach(bullet -> bullet.update());
         this.hitbox.setLocation((int)x, (int)y);
+    }
+
+    private int safeShootX(){
+        float safeX = this.x + Math.round((45 + R) * Math.cos(Math.toRadians(angle) + 0.25));
+        return (int) safeX;
+    }
+
+    private int safeShootY(){
+        float safeY = this.y + Math.round((45 + R) * Math.sin(Math.toRadians(angle) + 0.25));
+        return (int)safeY;
     }
 
     private void rotateLeft() {
@@ -167,12 +180,15 @@ public class Tank extends GameObject{
 
         if(this.sX < 0) this.sX = 0;
         if(this.sY < 0) this.sY = 0;
+
         if(this.sX > GameConstants.GAME_WORLD_WIDTH - GameConstants.GAME_SCREEN_WIDTH/2){
             this.sX = GameConstants.GAME_WORLD_WIDTH - GameConstants.GAME_SCREEN_WIDTH/2;
         }
         if(this.sY > GameConstants.GAME_WORLD_HEIGHT - GameConstants.GAME_SCREEN_HEIGHT){
             this.sY = GameConstants.GAME_WORLD_HEIGHT - GameConstants.GAME_SCREEN_HEIGHT;
         }
+
+
     }
 
     @Override
@@ -187,27 +203,28 @@ public class Tank extends GameObject{
         Graphics2D g2d = (Graphics2D) g;
         g2d.drawImage(this.img, rotation, null);
         this.ammo.forEach(b -> b.drawImage(g2d));
-        //g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
+//        g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
 
         //hit box for tank
 //        g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
 
         g2d.setColor(Color.YELLOW);
-        //bullet cool time
+        //bullet cool time (charge) img
         g2d.drawRect((int)x, (int)y-20, 50, 10);
         long currWidth = 50 -((this.timeSinceLastShot + this.coolDown) - System.currentTimeMillis()) / 60;
         if(currWidth > 50){
             currWidth = 50;
         }
         g2d.fillRect((int)x, (int)y-20, (int)currWidth, 10 );
-
-
-
     }
 
     @Override
     public Rectangle getHitbox() {
         return this.hitbox.getBounds();
+    }
+
+    public BufferedImage getLifeImg(){
+        return ResourceManager.getSprite("life");
     }
 
     public float getX() {
@@ -226,12 +243,16 @@ public class Tank extends GameObject{
         return sY;
     }
 
-    public float getAngle(){
-        return angle;
+    public int getLifeCount (){
+        return this.lifeCount;
     }
 
-    public int getLifeCount(){
-        return lifeCount;
+    public void lifePowerUp(){
+        this.lifeCount ++;
+    }
+
+    public float getAngle(){
+        return angle;
     }
 
     public void toggleShootPressed() {
@@ -248,8 +269,13 @@ public class Tank extends GameObject{
             this.lifeCount --;
         }else if(with instanceof Walls){
             //stop
-            x -= vx;
-            y -=vy;
+            if (this.UpPressed) {
+                x -= vx;
+                y -=vy;
+            }else if (this.DownPressed) {
+                x += vx;
+                y += vy;
+            }
         }else if (with instanceof PowerUps){
             ((PowerUps) with).setHasCollided();
             ((PowerUps) with).applyPowerUp(this);

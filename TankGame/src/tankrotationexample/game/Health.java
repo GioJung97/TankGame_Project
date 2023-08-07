@@ -44,6 +44,6 @@ public class Health extends GameObject implements PowerUps {
 
     @Override
     public void applyPowerUp(GameObject Tank) {
-
+        ((Tank) Tank).lifePowerUp();
     }
 }
