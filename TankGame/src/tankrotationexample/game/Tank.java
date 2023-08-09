@@ -23,6 +23,7 @@ public class Tank extends GameObject{
     private float vy;
     private float angle;
     private int lifeCount = 3;
+    private int ID;
     private boolean shieldEffect = false;
     List<Bullet> ammo = new ArrayList<>();
 
@@ -42,13 +43,12 @@ public class Tank extends GameObject{
     private Rectangle hitbox;
 
 
-//    static ResourcePool<Bullet> bPool;
+//    static ResourcePool<Bullet> bPool = new ResourcePool<>("bullet", 300);
 //    static {
-//        bPool = new ResourcePool<>("bullet", 300);
 //        bPool.fillPool(Bullet.class, 300);
 //    }
 
-    Tank(float x, float y, float vx, float vy, float angle, BufferedImage img, int lifeCount) {
+    Tank(float x, float y, float vx, float vy, float angle, BufferedImage img, int lifeCount, int ID) {
         this.x = x;
         this.y = y;
         this.vx = vx;
@@ -57,6 +57,7 @@ public class Tank extends GameObject{
         this.angle = angle;
         this.hitbox = new Rectangle((int)x, (int)y, this.img.getWidth(), this.img.getHeight());
         this.lifeCount = lifeCount;
+        this.ID = ID;
     }
 
     void setX(float x){ this.x = x; }
@@ -113,8 +114,8 @@ public class Tank extends GameObject{
         }
 
         if(this.shootPressed && ((this.timeSinceLastShot + this.coolDown) < System.currentTimeMillis())){
-            this.timeSinceLastShot = System.currentTimeMillis();
-            var b = new Bullet(this.safeShootX(), this.safeShootY(), ResourceManager.getSprite("bullet"), angle);
+//            this.timeSinceLastShot = System.currentTimeMillis();
+            var b = new Bullet(this.bLocationX(), this.bLocationY(), ResourceManager.getSprite("bullet"), angle, this.ID);
             this.ammo.add(b);
             gw.addGameObject(b);
         }
@@ -123,12 +124,12 @@ public class Tank extends GameObject{
         this.hitbox.setLocation((int)x, (int)y);
     }
 
-    private int safeShootX(){
+    private int bLocationX(){
         float safeX = this.x + Math.round((45 + R) * Math.cos(Math.toRadians(angle) + 0.25));
         return (int) safeX;
     }
 
-    private int safeShootY(){
+    private int bLocationY(){
         float safeY = this.y + Math.round((45 + R) * Math.sin(Math.toRadians(angle) + 0.25));
         return (int)safeY;
     }
@@ -257,6 +258,10 @@ public class Tank extends GameObject{
         return this.lifeCount;
     }
 
+    public int getID(){
+        return this.ID;
+    }
+
     public boolean isShieldEffect() {
         return shieldEffect;
     }
@@ -277,7 +282,7 @@ public class Tank extends GameObject{
 
     }
 
-    public void bSpeedPowerUp(){
+    public void chargeSpeedPowerUp(){
         if(this.coolDown > 500){
             this.coolDown -= 500;
         }
@@ -305,12 +310,15 @@ public class Tank extends GameObject{
 
     public void collides(GameObject with){
         if(with instanceof Bullet){
-            //lose life
-            if(this.shieldEffect == true){
-                shieldEffectOff();
-            }else{
-                this.lifeCount --;
+
+            if(((Bullet) with).getID() != this.ID){
+                if(this.shieldEffect == true){
+                    shieldEffectOff();
+                }else{
+                    this.lifeCount --;
+                }
             }
+
         }else if(with instanceof Walls){
             //stop
             if (this.UpPressed) {

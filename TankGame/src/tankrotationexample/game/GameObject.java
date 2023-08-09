@@ -3,7 +3,6 @@ package tankrotationexample.game;
 import tankrotationexample.Resources.ResourceManager;
 
 import java.awt.*;
-import java.awt.geom.AffineTransform;
 
 public abstract class GameObject {
 
@@ -15,7 +14,7 @@ public abstract class GameObject {
             case "4" -> new Shield(x, y, ResourceManager.getSprite("shieldPU"));
             case "5" -> new Health(x, y, ResourceManager.getSprite("healthPU"));
             case "6" -> new Speed(x, y, ResourceManager.getSprite("speedPU"));
-            case "7" -> new bSpeed(x, y, ResourceManager.getSprite("bSpeedPU"));
+            case "7" -> new chargeSpeed(x, y, ResourceManager.getSprite("chargeSpeedPU"));
             default -> throw new UnsupportedOperationException("%s Invalid Game Object Type".formatted(gameObjectType));
         };
     }

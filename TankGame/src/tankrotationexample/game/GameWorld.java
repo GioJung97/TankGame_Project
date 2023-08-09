@@ -63,10 +63,10 @@ public class GameWorld extends JPanel implements Runnable {
                 Thread.sleep(1000 / 144);
 
                 //end game
-//                if(t1.getLifeCount() == 0 || t2.getLifeCount() == 0){
-//                    lf.setFrame("end");
-//                    break;
-//                }
+                if(t1.getLifeCount() == 0 || t2.getLifeCount() == 0){
+                    lf.setFrame("end");
+                    break;
+                }
             }
         } catch (InterruptedException ignored) {
             System.out.println(ignored);
@@ -109,7 +109,7 @@ public class GameWorld extends JPanel implements Runnable {
 
         InputStreamReader isr = new InputStreamReader(
                 Objects.requireNonNull(
-                    ResourceManager.class.getClassLoader().getResourceAsStream("maps/TankGameMap.csv"))
+                    ResourceManager.class.getClassLoader().getResourceAsStream("maps/TestMap.csv"))
                 );
 
 //        this.anim.add(new Animation(300, 300, ResourceManager.getAnimation("bullethit")));
@@ -140,11 +140,11 @@ public class GameWorld extends JPanel implements Runnable {
         }
 
 
-        t1 = new Tank(120, 120, 0, 0, (short) 90, ResourceManager.getSprite("tank1"), 3);
+        t1 = new Tank(120, 120, 0, 0, (short) 90, ResourceManager.getSprite("tank1"), 3, 0);
         TankControl tc1 = new TankControl(t1, KeyEvent.VK_W, KeyEvent.VK_S, KeyEvent.VK_A, KeyEvent.VK_D, KeyEvent.VK_SPACE);
         this.lf.getJf().addKeyListener(tc1);
 
-        t2 = new Tank(1750, 1270, 0, 0, (short) 270, ResourceManager.getSprite("tank2"), 3);
+        t2 = new Tank(1750, 1270, 0, 0, (short) 270, ResourceManager.getSprite("tank2"), 3, 1);
         TankControl tc2 = new TankControl(t2, KeyEvent.VK_UP, KeyEvent.VK_DOWN, KeyEvent.VK_LEFT, KeyEvent.VK_RIGHT, KeyEvent.VK_SHIFT);
         this.lf.getJf().addKeyListener(tc2);
 

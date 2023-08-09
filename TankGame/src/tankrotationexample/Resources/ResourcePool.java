@@ -16,16 +16,16 @@ public class ResourcePool <T> {
     }
 
     public boolean fillPool (Class<T> type, int size){
-        try{
-            for (int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
+            try {
                 this.pool.add(
-                    type.getDeclaredConstructor(Float.TYPE, Float.TYPE, BufferedImage.class)
-                            .newInstance(0,0,ResourceManager.getSprite(this.resourceType))
-
+                        type.getDeclaredConstructor(Float.TYPE, Float.TYPE, BufferedImage.class)
+                                .newInstance(0, 0, ResourceManager.getSprite(this.resourceType))
                 );
+            } catch (NoSuchMethodException | InvocationTargetException | InstantiationException |
+                     IllegalAccessException e) {
+                throw new RuntimeException(e);
             }
-        } catch (NoSuchMethodException | InvocationTargetException | InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
         }
         return true;
     }
