@@ -28,6 +28,6 @@ public class Sound {
 
     public void setVolume(float level){
         FloatControl volume = (FloatControl)  this.sound.getControl(FloatControl.Type.MASTER_GAIN);
-        volume.setValue(20.0f * (float)Math.log10(level));
+        volume.setValue(30.0f * (float)Math.log10(level));
     }
 }

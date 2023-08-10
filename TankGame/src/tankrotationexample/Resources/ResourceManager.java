@@ -4,18 +4,19 @@ import tankrotationexample.game.Bullet;
 import tankrotationexample.game.Sound;
 
 import javax.imageio.ImageIO;
+import javax.sound.sampled.*;
 import javax.sound.sampled.AudioInputStream;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 import java.awt.image.BufferedImage;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.net.URL;
 import java.util.*;
 
 public class ResourceManager {
 
     private final static Map<String, BufferedImage> sprites = new HashMap<>();
     private final static Map<String, List<BufferedImage>> animations = new HashMap<>();
-    private final static Map<String, Clip> sounds = new HashMap<>();
+    private final static Map<String, Sound> sounds = new HashMap<>();
     private static final Map<String, Integer> animationInfo = new HashMap<>(){{
         put("bullethit", 24);
         put("bulletshoot", 24);
@@ -77,37 +78,46 @@ public class ResourceManager {
     }
 
     public static List<BufferedImage> getAnimation(String type){
+        if(!ResourceManager.animations.containsKey(type)){
+            throw new RuntimeException("%s is missing from Animation Files.".formatted(type));
+        }
         return ResourceManager.animations.get(type);
     }
 
-    public static void loadResources(){
-        ResourceManager.initSprite();
-        ResourceManager.initAnimation();
+    private static Sound loadSound(String path) throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        URL resourceURL = ResourceManager.class.getClassLoader().getResource(path);
+
+        if (resourceURL == null) {
+            throw new FileNotFoundException("%s is missing from Sound Files.".formatted(path));
+        }
+
+        AudioInputStream ais = AudioSystem.getAudioInputStream(resourceURL);
+
+        Clip c = AudioSystem.getClip();
+        c.open(ais);
+        Sound s = new Sound(c);
+        s.setVolume(.1f);
+
+        return s;
     }
 
-//    private static Sound loadSound(String path){
-//        AudioInputStream ais = AudioSystem.getAudioInputStream(
-//                Objects.requireNonNull(ResourceManager.class.getClassLoader().getResources(path))
-//        );
-//
-//        Clip c = AudioSystem.getClip();
-//        c.open(ais);
-//        Sound s = new Sound(c);
-//        s.setVolume(.2f);
-//
-//        return s;
-//    }
+    private static void initSounds(){
+        try{
+            ResourceManager.sounds.put("bullet_shoot", loadSound("sounds/bullet_shoot.wav"));
+            ResourceManager.sounds.put("pickup", loadSound("sounds/pickup.wav"));
+            ResourceManager.sounds.put("background", loadSound("sounds/Music.mid"));
+            ResourceManager.sounds.put("bullethit", loadSound("sounds/explosion.wav"));
+        }catch(Exception e){
+            System.out.println(e);
+        }
+    }
 
-//    private static void initSounds(){
-//        try{
-//            ResourceManager.sounds.put("shoot", loadSound("sounds/bullet_shoot.wav"));
-//            ResourceManager.sounds.put("pickup", loadSound("sounds.pickup"));
-//            ResourceManager.sounds.put("background", loadSound("sounds/Music.mid"));
-//            ResourceManager.sounds.put("bullethit", loadSound("sounds/explosion.wav"));
-//        }catch(UnsupportedOperationException e){
-//            throw new RuntimeException(e);
-//        }
-//    }
+    public static Sound getSound (String type){
+        if(!ResourceManager.sounds.containsKey(type)){
+            throw new RuntimeException("%s is missing from Sound files.".formatted(type));
+        }
+        return ResourceManager.sounds.get(type);
+    }
 
     public static BufferedImage getSprite(String type) {
         if(!ResourceManager.sprites.containsKey(type)){
@@ -116,8 +126,16 @@ public class ResourceManager {
         return ResourceManager.sprites.get(type);
     }
 
+    public static void loadResources(){
+        ResourceManager.initSprite();
+        ResourceManager.initAnimation();
+        ResourceManager.initSounds();
+    }
+
     public static void main(String[] args) {
         ResourceManager.loadResources();
+        Sound bg = ResourceManager.getSound("background");
+        bg.setLooping();
         System.out.println();
     }
 }

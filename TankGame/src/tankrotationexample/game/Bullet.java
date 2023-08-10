@@ -1,8 +1,6 @@
 package tankrotationexample.game;
 
-import tankrotationexample.GameConstants;
 import tankrotationexample.Resources.ResourceManager;
-import tankrotationexample.Resources.ResourcePool;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
@@ -50,21 +48,6 @@ public class Bullet extends GameObject{
         this.hitbox.setLocation((int)x, (int)y);
     }
 
-//    private void checkBorder() {
-//        if (x < 30) {
-//            x = 30;
-//        }
-//        if (x >= GameConstants.GAME_WORLD_WIDTH - 80) {
-//            x = GameConstants.GAME_WORLD_WIDTH - 80;
-//        }
-//        if (y < 30) {
-//            y = 30;
-//        }
-//        if (y >= GameConstants.GAME_WORLD_HEIGHT - 80) {
-//            y = GameConstants.GAME_WORLD_HEIGHT - 80;
-//        }
-//    }
-
     @Override
     public String toString() {
         return "x=" + x + ", y=" + y + ", angle=" + angle;
@@ -75,11 +58,8 @@ public class Bullet extends GameObject{
         if(!hasCollided){
             AffineTransform rotation = AffineTransform.getTranslateInstance(x, y);
             rotation.rotate(Math.toRadians(angle), this.img.getWidth() * 2 / 2.0,  this.img.getHeight() * 2 / 2.0);
-//            rotation.scale(3,3);
             Graphics2D g2d = (Graphics2D) g;
             g2d.drawImage(this.img, rotation, null);
-//      g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
-//        g2d.drawRect((int)x,(int)y,this.img.getWidth() * 3, this.img.getHeight() * 3);
         }
     }
 
@@ -95,6 +75,7 @@ public class Bullet extends GameObject{
     public void collides(GameObject with, GameWorld gw){
         if(!(with instanceof PowerUps)){
             gw.anims.add(new Animation(x, y, ResourceManager.getAnimation("bullethit")));
+            ResourceManager.getSound("bullethit").playSound();
             if(with instanceof Walls){
                 setHasCollided();
                 ((Walls) with).setHasCollided();

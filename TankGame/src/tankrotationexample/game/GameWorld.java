@@ -27,12 +27,11 @@ public class GameWorld extends JPanel implements Runnable {
     private BufferedImage world;
     private Tank t1;
     private Tank t2;
-    private Bullet bullet1;
-    private Bullet bullet2;
     private final Launcher lf;
     private long tick = 0;
     private List<GameObject> gobjs = new ArrayList<>(800);
     List<Animation> anims = new ArrayList<>();
+    Sound bg = ResourceManager.getSound("background");
 
     /**
      *
@@ -41,17 +40,15 @@ public class GameWorld extends JPanel implements Runnable {
         this.lf = lf;
     }
 
-    public void addAnimation (Animation a){
-//        this.
-    }
-
     @Override
     public void run() {
         try {
+            bg.setLooping();
+            bg.playSound();
             while (true) {
                 this.tick++;
                 this.t1.update(this);
-                this.t2.update(this);// update tank
+                this.t2.update(this);
                 this.anims.forEach(animation -> animation.update());
                 this.checkCollision();
                 this.gobjs.removeIf(gameObject -> gameObject.hasCollided());
@@ -64,6 +61,7 @@ public class GameWorld extends JPanel implements Runnable {
 
                 //end game
                 if(t1.getLifeCount() == 0 || t2.getLifeCount() == 0){
+                    resetGame();
                     lf.setFrame("end");
                     break;
                 }
@@ -92,9 +90,9 @@ public class GameWorld extends JPanel implements Runnable {
      * Reset game to its initial state.
      */
     public void resetGame() {
-        this.tick = 0;
-        this.t1.setX(300);
-        this.t1.setY(300);
+        gobjs.clear();
+        anims.clear();
+        InitializeGame();
     }
 
     /**
@@ -213,14 +211,6 @@ public class GameWorld extends JPanel implements Runnable {
         renderMiniMap(g2);
         lifeScreen(g2);
     }
-
-//    public static void main(String[] args) {
-//        Launcher launcher = new Launcher();
-//        GameWorld gameWorld = new GameWorld(launcher);
-//        ResourceManager.loadResources();
-//        gameWorld.InitializeGame();
-//        gameWorld.checkCollision();
-//    }
 
     public void addGameObject(Bullet obj) {
         this.gobjs.add(obj);

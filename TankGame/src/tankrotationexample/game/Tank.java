@@ -2,13 +2,10 @@ package tankrotationexample.game;
 
 import tankrotationexample.GameConstants;
 import tankrotationexample.Resources.ResourceManager;
-import tankrotationexample.Resources.ResourcePool;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
-import java.awt.image.AffineTransformOp;
 import java.awt.image.BufferedImage;
-import java.nio.Buffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -41,12 +38,6 @@ public class Tank extends GameObject{
     private boolean shootPressed;
 
     private Rectangle hitbox;
-
-
-//    static ResourcePool<Bullet> bPool = new ResourcePool<>("bullet", 300);
-//    static {
-//        bPool.fillPool(Bullet.class, 300);
-//    }
 
     Tank(float x, float y, float vx, float vy, float angle, BufferedImage img, int lifeCount, int ID) {
         this.x = x;
@@ -119,6 +110,7 @@ public class Tank extends GameObject{
             this.ammo.add(b);
             gw.addGameObject(b);
             gw.anims.add(new Animation(x, y, ResourceManager.getAnimation("bulletshoot")));
+            ResourceManager.getSound("bullet_shoot").playSound();
         }
 
         this.ammo.forEach(bullet -> bullet.update());
@@ -207,16 +199,12 @@ public class Tank extends GameObject{
 
         //shield img
         if(shieldEffect){
-            g2d.drawImage(ResourceManager.getSprite("shieldEffect"), (int)this.x - 27, (int)this.y - 25 , null);
+            g2d.drawImage(ResourceManager.getSprite("shieldEffect"), (int)this.x - 27, (int)this.y - 25, null);
         }
 
         //tank img
         g2d.drawImage(this.img, rotation, null);
         this.ammo.forEach(b -> b.drawImage(g2d));
-//        g2d.rotate(Math.toRadians(angle), bounds.x + bounds.width/2, bounds.y + bounds.height/2);
-
-        //hit box for tank
-//        g2d.drawRect((int)x,(int)y,this.img.getWidth(), this.img.getHeight());
 
         g2d.setColor(Color.YELLOW);
         //bullet cool time (charge) img
@@ -226,8 +214,6 @@ public class Tank extends GameObject{
             currWidth = 50;
         }
         g2d.fillRect((int)x, (int)y-20, (int)currWidth, 10 );
-
-
     }
 
     @Override
@@ -279,10 +265,6 @@ public class Tank extends GameObject{
         }
     }
 
-    public void ShieldPowerUp(){
-
-    }
-
     public void chargeSpeedPowerUp(){
         if(this.coolDown > 500){
             this.coolDown -= 500;
@@ -318,7 +300,6 @@ public class Tank extends GameObject{
                     this.lifeCount --;
                 }
             }
-
         }else if(with instanceof Walls){
             if (this.UpPressed) {
                 x -= vx;
@@ -339,6 +320,7 @@ public class Tank extends GameObject{
             }
             ((PowerUps) with).setHasCollided();
             ((PowerUps) with).applyPowerUp(this);
+            ResourceManager.getSound("pickup").playSound();
         }
     }
 
