@@ -1,5 +1,7 @@
 package tankrotationexample.game;
 
+import tankrotationexample.Resources.ResourceManager;
+
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.List;
@@ -27,11 +29,11 @@ public class Animation {
         if(this.timeSinceLastUpdate + this.delay < System.currentTimeMillis()){
             this.timeSinceLastUpdate = System.currentTimeMillis();
             this.currentFrame ++;
-            this.currentFrame = (this.currentFrame + 1) % this.frames.size();
+//            this.currentFrame = (this.currentFrame + 1) % this.frames.size();
 
-//            if(this.currentFrame == this.frames.size()){
-//                isRunning = false;
-//            }
+            if(this.currentFrame == this.frames.size()){
+                isRunning = false;
+            }
         }
     }
 

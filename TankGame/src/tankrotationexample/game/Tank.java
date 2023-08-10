@@ -114,10 +114,11 @@ public class Tank extends GameObject{
         }
 
         if(this.shootPressed && ((this.timeSinceLastShot + this.coolDown) < System.currentTimeMillis())){
-//            this.timeSinceLastShot = System.currentTimeMillis();
+            this.timeSinceLastShot = System.currentTimeMillis();
             var b = new Bullet(this.bLocationX(), this.bLocationY(), ResourceManager.getSprite("bullet"), angle, this.ID);
             this.ammo.add(b);
             gw.addGameObject(b);
+            gw.anims.add(new Animation(x, y, ResourceManager.getAnimation("bulletshoot")));
         }
 
         this.ammo.forEach(bullet -> bullet.update());
@@ -125,12 +126,12 @@ public class Tank extends GameObject{
     }
 
     private int bLocationX(){
-        float safeX = this.x + Math.round((45 + R) * Math.cos(Math.toRadians(angle) + 0.25));
+        float safeX = this.x + Math.round((35 + R) * Math.cos(Math.toRadians(angle)));
         return (int) safeX;
     }
 
     private int bLocationY(){
-        float safeY = this.y + Math.round((45 + R) * Math.sin(Math.toRadians(angle) + 0.25));
+        float safeY = this.y + Math.round((35 + R) * Math.sin(Math.toRadians(angle)));
         return (int)safeY;
     }
 
@@ -308,9 +309,8 @@ public class Tank extends GameObject{
         this.shootPressed = false;
     }
 
-    public void collides(GameObject with){
+    public void collides(GameObject with, GameWorld gw){
         if(with instanceof Bullet){
-
             if(((Bullet) with).getID() != this.ID){
                 if(this.shieldEffect == true){
                     shieldEffectOff();
@@ -320,7 +320,6 @@ public class Tank extends GameObject{
             }
 
         }else if(with instanceof Walls){
-            //stop
             if (this.UpPressed) {
                 x -= vx;
                 y -=vy;
@@ -329,6 +328,15 @@ public class Tank extends GameObject{
                 y += vy;
             }
         }else if (with instanceof PowerUps){
+            if(with instanceof Health){
+                gw.anims.add(new Animation(x + 20, y - 50, ResourceManager.getAnimation("healthpick")));
+            }else if (with instanceof Shield){
+                gw.anims.add(new Animation(x - 40, y - 50, ResourceManager.getAnimation("shieldpick")));
+            }else if (with instanceof Speed){
+                gw.anims.add(new Animation(x, y, ResourceManager.getAnimation("speedpick")));
+            }else { //with instance of chargeSpeed
+                gw.anims.add(new Animation(x, y, ResourceManager.getAnimation("chargepick")));
+            }
             ((PowerUps) with).setHasCollided();
             ((PowerUps) with).applyPowerUp(this);
         }

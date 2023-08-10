@@ -32,7 +32,7 @@ public class GameWorld extends JPanel implements Runnable {
     private final Launcher lf;
     private long tick = 0;
     private List<GameObject> gobjs = new ArrayList<>(800);
-    private List<Animation> anim = new ArrayList<>();
+    List<Animation> anims = new ArrayList<>();
 
     /**
      *
@@ -52,7 +52,7 @@ public class GameWorld extends JPanel implements Runnable {
                 this.tick++;
                 this.t1.update(this);
                 this.t2.update(this);// update tank
-//                this.anim.forEach(animation -> animation.update());
+                this.anims.forEach(animation -> animation.update());
                 this.checkCollision();
                 this.gobjs.removeIf(gameObject -> gameObject.hasCollided());
                 this.repaint();   // redraw game
@@ -82,7 +82,7 @@ public class GameWorld extends JPanel implements Runnable {
                 GameObject ob2 = this.gobjs.get(j);
                 if(ob1.getHitbox().intersects(ob2.getHitbox())){
                     System.out.println("Hit");
-                    ob1.collides(ob2);
+                    ob1.collides(ob2, this);
                 }
             }
         }
@@ -111,8 +111,6 @@ public class GameWorld extends JPanel implements Runnable {
                 Objects.requireNonNull(
                     ResourceManager.class.getClassLoader().getResourceAsStream("maps/TestMap.csv"))
                 );
-
-//        this.anim.add(new Animation(300, 300, ResourceManager.getAnimation("bullethit")));
 
         //9 -> unbreakable && not in a collisions
         //3 -> unbreakable
@@ -210,6 +208,7 @@ public class GameWorld extends JPanel implements Runnable {
         this.gobjs.forEach(gameObject -> gameObject.drawImage(buffer));
         this.t1.drawImage(buffer);
         this.t2.drawImage(buffer);
+        this.anims.forEach(animation -> animation.drawImage(buffer));
         renderSplitScreen(g2);
         renderMiniMap(g2);
         lifeScreen(g2);

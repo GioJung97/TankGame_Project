@@ -34,7 +34,7 @@ public class Speed extends GameObject implements PowerUps {
     }
 
     @Override
-    public void collides(GameObject ob) {
+    public void collides(GameObject with, GameWorld gw) {
     }
 
     @Override

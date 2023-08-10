@@ -17,12 +17,12 @@ public class ResourceManager {
     private final static Map<String, List<BufferedImage>> animations = new HashMap<>();
     private final static Map<String, Clip> sounds = new HashMap<>();
     private static final Map<String, Integer> animationInfo = new HashMap<>(){{
-        put("bullet", 32);
-        put("nuke", 24);
-//        put("powerpick", 32);
-//        put("puffsmoke", 32);
-//        put("rocketflame", 16);
-//        put("rockethit", 32);
+        put("bullethit", 24);
+        put("bulletshoot", 24);
+        put("shieldpick", 32);
+        put("chargepick", 10);
+        put("healthpick", 10);
+        put("speedpick", 16);
     }};
 
     private static BufferedImage loadSprite(String path) throws IOException{
@@ -53,8 +53,6 @@ public class ResourceManager {
             ResourceManager.sprites.put("floor", loadSprite("floor/bg.bmp"));
             ResourceManager.sprites.put("life", loadSprite("Life/life.png"));
             ResourceManager.sprites.put("shieldEffect", loadSprite("shield/shield.png"));
-
-
         }catch (IOException e){
             throw new RuntimeException(e);
         }

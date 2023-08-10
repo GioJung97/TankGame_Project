@@ -30,7 +30,7 @@ public class Wall extends GameObject implements Walls{
     }
 
     @Override
-    public void collides(GameObject ob) {
+    public void collides(GameObject with, GameWorld gw) {
 
     }
 

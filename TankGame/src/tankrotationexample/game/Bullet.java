@@ -1,6 +1,7 @@
 package tankrotationexample.game;
 
 import tankrotationexample.GameConstants;
+import tankrotationexample.Resources.ResourceManager;
 import tankrotationexample.Resources.ResourcePool;
 
 import java.awt.*;
@@ -91,13 +92,16 @@ public class Bullet extends GameObject{
     }
 
     @Override
-    public void collides(GameObject with){
-        if(with instanceof Walls){
-            setHasCollided();
-            ((Walls) with).setHasCollided();
-        }else if(with instanceof Tank){
-            if(((Tank) with).getID() != this.ID){
+    public void collides(GameObject with, GameWorld gw){
+        if(!(with instanceof PowerUps)){
+            gw.anims.add(new Animation(x, y, ResourceManager.getAnimation("bullethit")));
+            if(with instanceof Walls){
                 setHasCollided();
+                ((Walls) with).setHasCollided();
+            }else if(with instanceof Tank){
+                if(((Tank) with).getID() != this.ID){
+                    setHasCollided();
+                }
             }
         }
     }
