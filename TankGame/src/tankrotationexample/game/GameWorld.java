@@ -79,7 +79,7 @@ public class GameWorld extends JPanel implements Runnable {
                 if(i == j) continue;
                 GameObject ob2 = this.gobjs.get(j);
                 if(ob1.getHitbox().intersects(ob2.getHitbox())){
-                    System.out.println("Hit");
+//                    System.out.println("Hit");
                     ob1.collides(ob2, this);
                 }
             }
@@ -107,7 +107,8 @@ public class GameWorld extends JPanel implements Runnable {
 
         InputStreamReader isr = new InputStreamReader(
                 Objects.requireNonNull(
-                    ResourceManager.class.getClassLoader().getResourceAsStream("maps/TestMap.csv"))
+                    ResourceManager.class.getClassLoader().getResourceAsStream("maps/TankGameMap.csv"))
+//                  ResourceManager.class.getClassLoader().getResourceAsStream("maps/TestMap.csv"))
                 );
 
         //9 -> unbreakable && not in a collisions
