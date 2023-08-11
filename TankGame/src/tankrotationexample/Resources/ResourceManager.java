@@ -131,11 +131,4 @@ public class ResourceManager {
         ResourceManager.initAnimation();
         ResourceManager.initSounds();
     }
-
-    public static void main(String[] args) {
-        ResourceManager.loadResources();
-        Sound bg = ResourceManager.getSound("background");
-        bg.setLooping();
-        System.out.println();
-    }
 }
